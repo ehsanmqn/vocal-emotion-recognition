@@ -1,6 +1,14 @@
 ## Speech Emotion Recognition
 This repository contains our work on Speech emotion recognition using emodb dataset. This dataset is available here [Emo-db](http://www.emodb.bilderbar.info/download/)
 
+### Experimental results
+Five different models applied for emotion recognition purpose (SVM, Random Forest, NN, CNN and LSTM). Each model trained and evaluated using emo-DB's four classes (Sad, Happy, Neutral and Angry). Following are experimental results from each model (test_size=0.2, random_state=42):
+1) SVM accuracy: 76%
+2) RF accuracy: 64%
+3) NN accuracy: 80%
+4) CNN accuracy: 85%
+5) LSTM accuracy: 86%
+
 ### Prerequisites
 Linux (preferable Ubuntu LTS). Python2.x 
 
