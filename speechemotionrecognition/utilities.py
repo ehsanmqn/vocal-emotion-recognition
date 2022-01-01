@@ -35,42 +35,62 @@ def get_data(dataset_path, flatten=True, mfcc_len=39):
     """
     data = []
     labels = []
-    max_fs = 0
-    min_sample = int('9' * 10)
-    s = 0
-    cnt = 0
     cur_dir = os.getcwd()
     print('curdir', cur_dir)
     os.chdir(dataset_path)
     for i, directory in enumerate(class_labels):
-        print "started reading folder", directory
+        print("started reading folder", directory)
         os.chdir(directory)
         for filename in os.listdir('.'):
             fs, signal = read_wav(filename)
-            max_fs = max(max_fs, fs)
-            s_len = len(signal)
+            signalLength = len(signal)
             # pad the signals to have same size if lesser than required
             # else slice them
-            if s_len < mslen:
-                pad_len = mslen - s_len
+            if signalLength < mslen:
+                pad_len = mslen - signalLength
                 pad_rem = pad_len % 2
-                pad_len /= 2
+                pad_len //= 2
                 signal = np.pad(signal, (pad_len, pad_len + pad_rem), 'constant', constant_values=0)
             else:
-                pad_len = s_len - mslen
-                pad_len /= 2
+                pad_len = signalLength - mslen
+                pad_len //= 2
                 signal = signal[pad_len:pad_len + mslen]
-            min_sample = min(len(signal), min_sample)
             mfcc = speechpy.feature.mfcc(signal, fs, num_cepstral=mfcc_len)
+            print("SIZED:", mfcc.shape)
 
             if flatten:
                 # Flatten the data
                 mfcc = mfcc.flatten()
             data.append(mfcc)
             labels.append(i)
-            cnt += 1
-        print "ended reading folder", directory
+        print("ended reading folder", directory)
         os.chdir('..')
     os.chdir(cur_dir)
     x_train, x_test, y_train, y_test = train_test_split(data, labels, test_size=0.2, random_state=42)
     return np.array(x_train), np.array(x_test), np.array(y_train), np.array(y_test)
+
+def read_file(filename, flatten=False, mfcc_len=39):
+    data = []
+
+    fs, signal = read_wav(filename)
+    signalLength = len(signal)
+    # pad the signals to have same size if lesser than required
+    # else slice them
+    if signalLength < mslen:
+        pad_len = mslen - signalLength
+        pad_rem = pad_len % 2
+        pad_len //= 2
+        signal = np.pad(signal, (pad_len, pad_len + pad_rem), 'constant', constant_values=0)
+    else:
+        pad_len = signalLength - mslen
+        pad_len //= 2
+        signal = signal[pad_len:pad_len + mslen]
+    mfcc = speechpy.feature.mfcc(signal, fs, num_cepstral=mfcc_len)
+    print("SIZED:", mfcc.shape)
+
+    if flatten:
+        # Flatten the data
+        mfcc = mfcc.flatten()
+
+    data.append(mfcc)
+    return np.array(data)

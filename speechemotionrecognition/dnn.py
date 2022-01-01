@@ -42,11 +42,18 @@ class DNN(Model):
         self.model.save_weights(self.save_path)
 
     def evaluate(self, x_test, y_test):
-        print 'Accuracy =', self.model.evaluate(x_test, y_test)[1]
+        print('Accuracy =', self.model.evaluate(x_test, y_test)[1])
+
+    def predict(self, X):
+        print('Predict: ', self.model.predict(X))
+
+    def predict_classes(self, X):
+        return self.model.predict_classes(X)
+        print('Classes: ', self.model.predict_classes(X))
 
     def train(self, x_train, y_train, x_val=None, y_val=None):
         best_acc = 0
-        for i in xrange(50):
+        for i in range(50):
             # Shuffle the data for each epoch in unison inspired from https://stackoverflow.com/a/4602224
             p = np.random.permutation(len(x_train))
             x_train = x_train[p]
@@ -98,7 +105,7 @@ class CNN(DNN):
 
 class LSTM(DNN):
     """
-    This class handles CNN for speech emotion recognitions
+    This class handles LSTM for speech emotion recognitions
     """
 
     def __init__(self, input_shape, num_classes, **params):
